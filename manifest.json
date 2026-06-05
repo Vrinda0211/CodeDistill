@@ -1,0 +1,10 @@
+{
+    "manifest_version" : 3,
+    "name" : "CodeDistill",
+    "version" : "1.0",
+    "permissions" : ["contextMenus"],
+    "description" : "Removes clutter from copied code so developers don't have to clean it manually",
+    "background" : {
+        "service_worker" : "background.js"
+    }
+}
