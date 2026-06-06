@@ -1,5 +1,3 @@
-importScripts('utils/cleaner.js')
-
 chrome.runtime.onInstalled.addListener(()=>{
     chrome.contextMenus.create({
         "title" : "Copy Clean",
@@ -11,12 +9,23 @@ chrome.runtime.onInstalled.addListener(()=>{
 chrome.contextMenus.onClicked.addListener((info,tab)=>{
     if(info.menuItemId=="1")
     {
-        const text=info.selectionText
-        const cleaned=cleanCode(text);
         chrome.scripting.executeScript({
             target : {tabId : tab.id},
-            func : (text)=>{navigator.clipboard.writeText(text)},
-            args : [cleaned]
+            func : ()=>{
+                const text=window.getSelection().toString();
+                const lines=text.split(/\r\n|\r|\n/);
+                const cleaned=lines.map(line=>{
+                    line=line.replace("$","").trimStart();
+                    line=line.replace(">>>","").trimStart();
+                    line=line.replace(">>","").trimStart();
+                    line=line.replace("PS>","").trimStart();
+                    line=line.replace(/^\d+\s+/,"");
+                    return line;
+                })
+                navigator.clipboard.writeText(cleaned.join("\n"))
+                return cleaned.join("\n");
+            }
         })
+    
     }
 })
