@@ -77,12 +77,17 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
                         })
                         return;
                     }
-                    console.log(JSON.stringify(data))
                     const cleanedText=data.candidates[0].content.parts[0].text
-                    console.log("Gemini response:", cleanedText)
                     chrome.scripting.executeScript({
                         target : {tabId:tab.id},
-                        func : (text)=>navigator.clipboard.writeText(text),
+                        func : (text)=>{
+                            const textarea=document.createElement('textarea');
+                            textarea.value=text;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textarea);
+                        },
                         args : [cleanedText]
                     })
                 })
