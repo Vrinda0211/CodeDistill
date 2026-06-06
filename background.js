@@ -4,6 +4,11 @@ chrome.runtime.onInstalled.addListener(()=>{
         "id" : "1",
         "contexts" : ["selection"]
     })
+    chrome.contextMenus.create({
+        "title" : "AI Copy Clean",
+        "id" : "2",
+        "contexts" : ["selection"]
+    })
 })
 
 chrome.contextMenus.onClicked.addListener((info,tab)=>{
@@ -30,5 +35,48 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
             }
         })
     
+    }
+    if(info.menuItemId=="2")
+    {
+        chrome.storage.local.get("geminiKey",(result)=>{
+            if(!result.geminiKey)
+            {
+                chrome.scripting.executeScript({
+                    target : {tabId:tab.id},
+                    func : ()=>alert("Please set your Gemini API key by clicking the CodeDistill extension icon")
+                })
+                return;
+            }
+            const apiKey=result.geminiKey;
+            chrome.scripting.executeScript({
+                target : {tabId:tab.id},
+                func : ()=>window.getSelection().toString()
+            }).then(results=>{
+                const text=results[0].result;
+                fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
+                method : "POST",
+                    headers : {
+                        "x-goog-api-key" : apiKey,
+                        "Content-Type" : "application/json"
+                    },
+                    body : JSON.stringify({
+                        contents : [{
+                            parts : [{
+                                text : `Extract only the executable code and commands from the following text. Remove line numbers, shell prompts ($, >>>, >>), output lines, logs, and any explanatory prose. Return only the clean code, nothing else, no explanations.\n\n${text}`
+                            }]
+                        }]
+                    })
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    const cleanedText=data.candidates[0].content.parts[0].text
+                    chrome.scripting.executeScript({
+                        target : {tabId:tab.id},
+                        func : (text)=>navigator.clipboard.writeText(text),
+                        args : [cleanedText]
+                    })
+                })
+            })
+        })
     }
 })
