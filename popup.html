@@ -1,8 +1,16 @@
 <html>
+    <head>
+        <title>CodeDistill</title>
+        <link rel="stylesheet" href="styles.css">
+        </head>
     <body>
+        <h2>CodeDistill</h2>
+        <p>Get your free API key from <a href="https://aistudio.google.com" target="_blank">Google AI Studio</a></p>
         <label for="apikey">Gemini API Key</label>
-        <input type="text" id="apikey">
+        <input type="text" id="apikey" placeholder="Paste your API key here">
         <button id="saveBtn">Save</button>
+        <p id="savedMsg" style="display:none">&#10003; Key saved!</p>
+        <p>Your key is stored locally and never shared.</p>
         <script src="popup.js"></script>
     </body>
 </html>
