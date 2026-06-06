@@ -53,7 +53,7 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
                 func : ()=>window.getSelection().toString()
             }).then(results=>{
                 const text=results[0].result;
-                fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
+                fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
                 method : "POST",
                     headers : {
                         "x-goog-api-key" : apiKey,
@@ -69,7 +69,17 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
                 })
                 .then(response=>response.json())
                 .then(data=>{
+                    if(data.error)
+                    {
+                        chrome.scripting.executeScript({
+                            target : {tabId:tab.id},
+                            func : ()=>alert("API Error: Request failed. Please try again later.")
+                        })
+                        return;
+                    }
+                    console.log(JSON.stringify(data))
                     const cleanedText=data.candidates[0].content.parts[0].text
+                    console.log("Gemini response:", cleanedText)
                     chrome.scripting.executeScript({
                         target : {tabId:tab.id},
                         func : (text)=>navigator.clipboard.writeText(text),
