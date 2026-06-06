@@ -20,8 +20,8 @@ CodeDistill removes the clutter so you get only what you can actually run.
 
 ## Features
 
-- **Clean Copy** — rule-based cleaning that strips line numbers, shell prompts (`$`, `>>>`, `>>`), and PowerShell prompts (`PS>`) instantly, no API key needed
-- **AI Clean Copy** — sends selected text to Gemini AI to intelligently extract only executable code, removing output lines, logs, and explanatory prose
+- **Clean Copy** - rule-based cleaning that strips line numbers, shell prompts (`$`, `>>>`, `>>`), and PowerShell prompts (`PS>`) instantly, no API key needed
+- **AI Clean Copy** - sends selected text to Gemini AI to intelligently extract only executable code, removing output lines, logs, and explanatory prose
 - Works on any website via right-click context menu
 - API key stored locally in your browser, never shared
 
