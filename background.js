@@ -15,10 +15,13 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
                 const text=window.getSelection().toString();
                 const lines=text.split(/\r\n|\r|\n/);
                 const cleaned=lines.map(line=>{
-                    line=line.replace("$","").trimStart();
-                    line=line.replace(">>>","").trimStart();
-                    line=line.replace(">>","").trimStart();
-                    line=line.replace("PS>","").trimStart();
+                    const originalLine=line;
+                    line=line.replace("$","")
+                    line=line.replace(">>>","")
+                    line=line.replace(">>","")
+                    line=line.replace("PS>","")
+                    if(line!=originalLine)
+                        line=line.trimStart();
                     line=line.replace(/^\d+\s+/,"");
                     return line;
                 })
